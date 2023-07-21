@@ -1,0 +1,373 @@
+syntax = "proto3";
+
+package Protocol;
+// import "google/protobuf/timestamp.proto";
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+enum MsgId {
+  S_ENTER_GAME = 0;
+  S_LEAVE_GAME = 1;
+
+  S_SPAWN = 2;
+
+  S_DESPAWN = 3;
+
+  C_MOVE = 4;
+  S_MOVE = 5;
+
+  C_SKILL = 6;
+  S_SKILL = 7;
+
+  C_CHANGE_HP = 8;
+  S_CHANGE_HP = 9;
+
+  S_DIE = 10;
+
+  S_CONNECTED = 11;
+
+  C_LOGIN = 12;
+  S_LOGIN = 13;
+
+  C_ENTER_GAME = 14;
+  C_LEAVE_GAME = 36;
+
+  C_CREATE_PLAYER = 15;
+  S_CREATE_PLAYER = 16;
+
+  S_ITEM_LIST = 17;
+
+  C_STAGE_CLEAR = 18;
+
+  S_STAGE_LIST = 19;
+
+  S_ADD_ITEM = 20;
+
+  C_EQUIP_ITEM = 21;
+  S_EQUIP_ITEM = 22;
+
+  S_CHANGE_STAT = 23;
+
+  S_ENTER_LOBBY = 24;
+  C_ENTER_LOBBY = 25;
+
+  S_RAID_MATCH = 26;
+  C_RAID_MATCH = 27;
+
+  S_QUEST_CHANGE = 28;
+  C_QUEST_CHANGE = 29;
+
+  S_QUEST_LIST = 30;
+
+  C_GET_EXP = 31;
+  S_GET_EXP = 32;
+
+  S_LEVEL_UP = 33;
+
+  C_BOSS_STAT_CHANGE = 34;
+  S_BOSS_STAT_CHANGE = 35;
+}
+
+enum CreateureState {
+	NONE = 0;
+	IDLE = 1;
+	WALK = 2;
+	SPRINT = 3;
+	NOMALATTACK = 4;
+	BATTLESKILL = 5;
+	ULTIMATE = 6;
+	KNOCKBACK = 7;
+	DEAD = 8;
+}
+
+enum GameObjectType {
+	PLAYER = 0;
+	MONSTER = 1;
+	PROJECTILE = 2;
+}
+
+enum SkillType {
+	SKILL_NONE = 0;
+	SKILL_AUTO = 1;
+	SKILL_NORMAL = 2;
+	SKILL_BATTLE = 3;
+	SKILL_ULTIMATE = 4;
+}
+
+enum PlayerServerState {
+	SERVER_STATE_LOGIN = 0;
+	SERVER_STATE_LOBBY = 1;
+	SERVER_STATE_GAME = 2;
+}
+
+enum ItemType {
+  ITEM_TYPE_NONE = 0;
+  ITEM_TYPE_WEAPON = 1;
+  ITEM_TYPE_ARMOR = 2;
+  ITEM_TYPE_CONSUMABLE = 3;
+}
+
+enum WeaponType {
+  WEAPON_TYPE_NONE = 0;
+  WEAPON_TYPE_SWORD = 1;
+  WEAPON_TYPE_BOW = 2;
+}
+
+enum ArmorType {
+  ARMOR_TYPE_NONE = 0;
+  ARMOR_TYPE_HELMET = 1;
+  ARMOR_TYPE_ARMOR = 2;
+  ARMOR_TYPE_BOOTS = 3;
+}
+
+enum ConsumableType {
+   CONSUMABLE_TYPE_NONE = 0;
+   CONSUMABLE_TYPE_POTION = 1;
+}
+
+
+
+
+
+
+// ---------------- Packet --------------------
+
+
+message S_EnterLobby {
+	ObjectInfo player = 1;
+}
+
+message C_EnterLobby {
+	string name = 1;
+	bool isGameToLobby = 2;
+}
+
+message S_EnterGame {
+	ObjectInfo player = 1;
+
+}
+
+message S_LeaveGame {
+	
+}
+
+message S_Spawn {
+	repeated ObjectInfo objects = 1;
+}
+
+message S_Despawn {
+	repeated int32 objectIds = 1;
+}
+
+message C_Move {
+	PositionInfo posInfo = 1;
+}
+
+message S_Move {
+	int32 objectId = 1;
+	PositionInfo posInfo = 2;
+}
+
+message C_Skill {
+	SkillInfo info = 1;
+}
+
+message S_Skill {
+	int32 objectId = 1;
+	SkillInfo info = 2;
+}
+
+message C_ChangeHp {
+	int32 hp = 1;
+}
+
+message S_ChangeHp {
+	int32 objectId = 1;
+	int32 hp = 2;
+}
+
+message S_Die {
+	int32 objectId = 1;
+	int32 attackerId = 2;
+}
+
+message S_Connected {
+}
+
+message C_Login {
+	string uniqueId = 1;
+}
+
+message S_Login {
+	int32 loginOk = 1;
+	repeated LobbyPlayerInfo players = 2;
+}
+
+message C_CreatePlayer {
+	string name = 1;
+}
+
+message S_CreatePlayer {
+	LobbyPlayerInfo player = 1;
+} 
+
+
+message C_EnterGame {
+	string name = 1;
+	int32 roomNum = 2;
+	int32 playerOrder = 3;
+	int32 equippedItemTemplatedId = 4;
+}
+
+message C_LeaveGame {
+	
+}
+
+
+message S_ItemList {
+	repeated ItemInfo items = 1;
+}
+
+message C_StageClear {
+	int32 stageId = 1;
+	string stageName = 2;
+}
+
+message S_StageList {
+	repeated string stageNames = 1;
+}
+
+message S_AddItem {
+	repeated ItemInfo items = 1;
+}
+
+message C_EquipItem {
+	int32 itemDbId = 1;
+	bool equipped = 2;
+}
+
+message S_EquipItem {
+	int32 itemDbId = 1;
+	bool equipped = 2;
+}
+
+message S_ChangeStat {
+	StatInfo statInfo = 1;
+}
+
+message S_RaidMatch {
+	bool matched = 1;
+	int32 roomNum = 2;
+	ObjectInfo player = 3;
+	int32 order = 4;
+}
+
+message C_RaidMatch {
+	bool req = 1;
+	string name = 2;
+}
+
+message S_QuestChange {
+	int32 questTemplatedId = 1;
+	bool isCleared = 2;
+	bool isRewarded = 3;
+}
+
+message C_QuestChange {
+	int32 questTemplatedId = 1;
+	bool isCleared = 2;
+	bool isRewarded = 3;
+}
+
+message S_QuestList {
+	repeated QuestInfo quests = 1;
+}
+
+message C_GetExp {
+	int32 totalExp = 1;
+}
+
+message S_GetExp {
+	int32 totalExp = 1;
+}
+
+message S_LevelUp {
+	int32 newLevel = 1;
+	int32 totalExp = 2;
+}
+
+
+message C_BossStatChange {
+	int32 damage = 1;
+}
+
+message S_BossStatChange {
+	int32 curHp = 1;
+	CreateureState state = 2;
+}
+
+
+// -----------------------------------------------
+
+
+
+
+
+
+
+
+
+message LobbyPlayerInfo {
+	int32 playerDbId = 1;
+	string name = 2;
+	StatInfo statInfo = 3;
+}
+
+message ObjectInfo {
+	int32 objectId = 1;
+	string name = 2;
+	PositionInfo posInfo = 3;
+	StatInfo statInfo = 4;
+	int32 equippedItemTemplatedId = 5;
+}
+
+message PositionInfo {
+	CreateureState state = 1;
+	float posX = 2;
+	float posY = 3;
+	float posZ = 4;
+	DirectionInfo dirInfo = 5;
+
+}
+
+message DirectionInfo {
+	float dirX = 1;
+	float dirY = 2;
+	float dirZ = 3;
+}
+
+message StatInfo {
+	int32 level = 1;
+	int32 hp = 2;
+	int32 maxHp = 3;
+	int32 attack = 4;
+	float speed = 5;
+	int32 totalExp = 6;
+}
+
+message SkillInfo {
+	int32 skillId = 1;
+}
+
+message ItemInfo {
+	int32 itemDbId = 1;
+	int32 templateId = 2;
+	int32 count = 3;
+	int32 slot = 4;
+	bool equipped = 5;
+}
+
+message QuestInfo {
+	int32 templateId = 1;
+	bool isCleared = 2;
+	bool isRewarded = 3;
+}
